@@ -9,24 +9,27 @@
   };
 
   function handleSave() {
-    if (prompt.scene.trim() || prompt.subject.trim() || prompt.setting.trim() || prompt.style.trim()) {
+    if (prompt.scene.trim() && prompt.subject.trim()) {
       onSave({ ...prompt });
       prompt = { scene: '', subject: '', setting: '', style: '' };
+    } else {
+      alert('Scene and Subject are required!');
     }
   }
 </script>
 
+<h1>Midjourney Prompt Creator</h1>
 <div class="prompt-form">
   <div class="form-row">
     <label>
-      <span>Scene:</span>
-      <input type="text" bind:value={prompt.scene} placeholder="Enter the scene...">
+      <span>Scene: *</span>
+      <input type="text" bind:value={prompt.scene} placeholder="Enter the scene (required)...">
     </label>
   </div>
   <div class="form-row">
     <label>
-      <span>Subject:</span>
-      <input type="text" bind:value={prompt.subject} placeholder="Enter the subject...">
+      <span>Subject: *</span>
+      <input type="text" bind:value={prompt.subject} placeholder="Enter the subject (required)...">
     </label>
   </div>
   <div class="form-row">
@@ -45,12 +48,19 @@
 </div>
 
 <style>
+  h1 {
+    color: #ffffff;
+    font-size: 28px;
+    margin: 0 0 20px 0;
+    text-align: left;
+  }
+
   .prompt-form {
     display: flex;
     flex-direction: column;
     gap: 30px;
     margin-bottom: 40px;
-    background-color: #2c2c2c;
+    background-color: #1a1a1a;
     padding: 40px;
     border-radius: 12px;
   }
@@ -59,8 +69,8 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    width: 90%; /* Set the width of the form row to 90% */
-    margin: 0 auto; /* Center the form row */
+    width: 90%;
+    margin: 0 auto;
   }
 
   label {
@@ -72,38 +82,39 @@
   label span {
     font-size: 18px;
     font-weight: bold;
+    color: #c0c0c0;
   }
 
   input {
-    width: 100%; /* Keep the input width at 100% of its parent (.form-row) */
+    width: 100%;
     padding: 15px;
     font-size: 16px;
-    background-color: #3c3c3c;
-    border: 2px solid #555;
+    background-color: #2a2a2a;
+    border: 2px solid #3a3a3a;
     color: #e0e0e0;
     border-radius: 8px;
   }
 
   input::placeholder {
-    color: #888;
+    color: #808080;
   }
 
   button {
     padding: 15px 30px;
     font-size: 18px;
-    background-color: #bb86fc;
-    color: #1e1e1e;
+    background-color: #3a3a3a;
+    color: #e0e0e0;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     font-weight: bold;
     transition: background-color 0.3s;
-    align-self: center; /* Center the button */
+    align-self: center;
     margin-top: 10px;
   }
 
   button:hover {
-    background-color: #a174e0;
+    background-color: #4a4a4a;
   }
 
   @media (max-width: 600px) {
@@ -113,7 +124,7 @@
     }
 
     .form-row {
-      width: 100%; /* Full width on mobile */
+      width: 100%;
     }
 
     input {
@@ -121,7 +132,7 @@
     }
 
     button {
-      width: 100%; /* Full width button on mobile */
+      width: 100%;
     }
   }
 </style>

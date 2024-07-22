@@ -11,7 +11,13 @@
   let copiedIndex: number | null = null;
 
   function generateFullPrompt(p: { scene: string; subject: string; setting: string; style: string }): string {
-    return `${p.scene} ${p.subject} ${p.setting} ${p.style}`.trim();
+    let parts = [
+      `Scene: ${p.scene}`,
+      `Subject: ${p.subject}`
+    ];
+    if (p.setting) parts.push(`Setting: ${p.setting}`);
+    if (p.style) parts.push(`Style: ${p.style}`);
+    return parts.join(' | ');
   }
 
   function handleCopy(prompt: { scene: string; subject: string; setting: string; style: string }, index: number) {
@@ -30,13 +36,14 @@
     {#each savedPrompts as savedPrompt, index}
       <li>
         <div class="prompt-content">
-          <strong>Scene:</strong> {savedPrompt.scene}
-          <br>
-          <strong>Subject:</strong> {savedPrompt.subject}
-          <br>
-          <strong>Setting:</strong> {savedPrompt.setting}
-          <br>
-          <strong>Style:</strong> {savedPrompt.style}
+          <p><strong>Scene:</strong> {savedPrompt.scene}</p>
+          <p><strong>Subject:</strong> {savedPrompt.subject}</p>
+          {#if savedPrompt.setting}
+            <p><strong>Setting:</strong> {savedPrompt.setting}</p>
+          {/if}
+          {#if savedPrompt.style}
+            <p><strong>Style:</strong> {savedPrompt.style}</p>
+          {/if}
         </div>
         <div class="button-group">
           <button class="action-button" on:click={() => handleCopy(savedPrompt, index)}>
@@ -52,12 +59,6 @@
 {/if}
 
 <style>
-  h2 {
-    font-size: 24px;
-    color: #bb86fc;
-    margin-bottom: 20px;
-  }
-
   ul {
     list-style-type: none;
     padding: 0;
@@ -66,7 +67,7 @@
   li {
     margin-bottom: 20px;
     padding: 20px;
-    background-color: #2c2c2c;
+    background-color: #1a1a1a;
     border-radius: 8px;
     display: flex;
     flex-direction: column;
@@ -76,6 +77,11 @@
   .prompt-content {
     font-size: 16px;
     line-height: 1.5;
+    color: #e0e0e0;
+  }
+
+  .prompt-content p {
+    margin: 5px 0;
   }
 
   .button-group {
@@ -87,8 +93,8 @@
   .action-button {
     padding: 10px 20px;
     font-size: 16px;
-    background-color: #bb86fc;
-    color: #1e1e1e;
+    background-color: #3a3a3a;
+    color: #e0e0e0;
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -97,15 +103,15 @@
   }
 
   .action-button:hover {
-    background-color: #a174e0;
+    background-color: #4a4a4a;
   }
 
   .delete-button {
-    background-color: #cf6679;
+    background-color: #2a2a2a;
   }
 
   .delete-button:hover {
-    background-color: #b55465;
+    background-color: #3a3a3a;
   }
 
   @media (max-width: 600px) {

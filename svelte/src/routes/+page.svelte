@@ -41,7 +41,6 @@
 </svelte:head>
 
 <main>
-  <h1>Midjourney Prompt Creator</h1>
   
   <PromptForm onSave={savePrompt} />
 
@@ -67,10 +66,6 @@
     padding: 20px;
   }
 
-  h1 {
-    color: #bb86fc;
-    text-align: center;
-  }
 
   @media (max-width: 600px) {
     main {
