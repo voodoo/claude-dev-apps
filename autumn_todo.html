@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seasonal Todo List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Theme-specific styles */
+        .theme-autumn { background-color: #FFF3E0; }
+        .theme-autumn .theme-header { background-color: #FB8C00; color: white; }
+        .theme-autumn .theme-sidebar { background-color: #FFCC80; }
+        .theme-autumn .theme-main h2 { color: #EF6C00; }
+        .theme-autumn .theme-main p { color: #F57C00; }
+        .theme-autumn .theme-footer { background-color: #F57C00; color: white; }
+        .theme-autumn .theme-button { background-color: #FFA726; color: white; }
+        .theme-autumn .theme-button:hover { background-color: #FB8C00; }
+        .theme-autumn .theme-select { background-color: #FFB74D; color: white; border: 1px solid #FB8C00; }
+
+        .theme-winter { background-color: #E3F2FD; }
+        .theme-winter .theme-header { background-color: #2196F3; color: white; }
+        .theme-winter .theme-sidebar { background-color: #90CAF9; }
+        .theme-winter .theme-main h2 { color: #1976D2; }
+        .theme-winter .theme-main p { color: #1E88E5; }
+        .theme-winter .theme-footer { background-color: #1E88E5; color: white; }
+        .theme-winter .theme-button { background-color: #42A5F5; color: white; }
+        .theme-winter .theme-button:hover { background-color: #2196F3; }
+        .theme-winter .theme-select { background-color: #64B5F6; color: white; border: 1px solid #2196F3; }
+
+        .theme-spring { background-color: #E8F5E9; }
+        .theme-spring .theme-header { background-color: #4CAF50; color: white; }
+        .theme-spring .theme-sidebar { background-color: #A5D6A7; }
+        .theme-spring .theme-main h2 { color: #388E3C; }
+        .theme-spring .theme-main p { color: #43A047; }
+        .theme-spring .theme-footer { background-color: #43A047; color: white; }
+        .theme-spring .theme-button { background-color: #66BB6A; color: white; }
+        .theme-spring .theme-button:hover { background-color: #4CAF50; }
+        .theme-spring .theme-select { background-color: #81C784; color: white; border: 1px solid #4CAF50; }
+
+        .theme-summer { background-color: #FFFDE7; }
+        .theme-summer .theme-header { background-color: #FFEB3B; color: black; }
+        .theme-summer .theme-sidebar { background-color: #FFF59D; }
+        .theme-summer .theme-main h2 { color: #FBC02D; }
+        .theme-summer .theme-main p { color: #FDD835; }
+        .theme-summer .theme-footer { background-color: #FDD835; color: black; }
+        .theme-summer .theme-button { background-color: #FFEE58; color: black; }
+        .theme-summer .theme-button:hover { background-color: #FFEB3B; }
+        .theme-summer .theme-select { background-color: #FFF176; color: black; border: 1px solid #FFEB3B; }
+
+        /* Common styles for select box */
+        .theme-select {
+            appearance: none;
+            padding: 0.5rem 2rem 0.5rem 1rem;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.7rem top 50%;
+            background-size: 1em auto;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+    <header class="theme-header p-4 flex justify-between items-center">
+        <h1 class="text-2xl font-bold">Seasonal Todo List</h1>
+        <div class="flex items-center">
+            <select id="theme-selector" class="theme-select mr-4 rounded">
+                <option value="autumn">Autumn</option>
+                <option value="winter">Winter</option>
+                <option value="spring">Spring</option>
+                <option value="summer">Summer</option>
+            </select>
+            <button id="menu-toggle" class="lg:hidden">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <div class="flex flex-1">
+        <aside id="sidebar" class="theme-sidebar w-64 p-4 hidden lg:block">
+            <h2 class="text-xl font-semibold mb-4">Menu</h2>
+            <nav>
+                <ul>
+                    <li><a href="#" onclick="showContent('home')" class="hover:underline">Home</a></li>
+                    <li><a href="#" onclick="showContent('about')" class="hover:underline">About</a></li>
+                    <li><a href="#" onclick="showContent('contact')" class="hover:underline">Contact</a></li>
+                    <li><a href="#" onclick="showContent('solar')" class="hover:underline">Solar</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main id="main-content" class="theme-main flex-1 p-4">
+            <div id="home-content">
+                <h2 class="text-2xl font-bold mb-4">Todo List</h2>
+                <div class="bg-white rounded-lg shadow-md p-4">
+                    <ul id="todo-list" class="space-y-2">
+                        <li class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <input type="checkbox" class="mr-2">
+                                <span>Rake leaves</span>
+                            </div>
+                            <button onclick="deleteTodo(this)" class="hover:underline">Delete</button>
+                        </li>
+                        <li class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <input type="checkbox" class="mr-2">
+                                <span>Prepare pumpkin pie</span>
+                            </div>
+                            <button onclick="deleteTodo(this)" class="hover:underline">Delete</button>
+                        </li>
+                        <li class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <input type="checkbox" class="mr-2">
+                                <span>Decorate for Halloween</span>
+                            </div>
+                            <button onclick="deleteTodo(this)" class="hover:underline">Delete</button>
+                        </li>
+                    </ul>
+                    <div class="mt-4">
+                        <input type="text" id="new-todo" placeholder="Add a new todo" class="border rounded px-2 py-1 mr-2">
+                        <button onclick="addTodo()" class="theme-button px-4 py-1 rounded">Add</button>
+                    </div>
+                </div>
+            </div>
+            <div id="about-content" class="hidden">
+                <h2 class="text-2xl font-bold mb-4">About</h2>
+                <p>Welcome to our Seasonal Todo List application! This simple and intuitive app helps you keep track of your tasks and activities throughout the year. Whether it's raking leaves in autumn, building snowmen in winter, planting flowers in spring, or enjoying beach days in summer, our app has got you covered.</p>
+            </div>
+            <div id="contact-content" class="hidden">
+                <h2 class="text-2xl font-bold mb-4">Contact</h2>
+                <p>Have questions or suggestions? Feel free to reach out to us!</p>
+                <ul class="mt-4 space-y-2">
+                    <li>Email: seasons@todolist.com</li>
+                    <li>Phone: (555) 123-4567</li>
+                    <li>Address: 123 Seasonal Street, Weather Town, WT 12345</li>
+                </ul>
+            </div>
+            <div id="solar-content" class="hidden">
+                <h2 class="text-2xl font-bold mb-4">Solar Energy</h2>
+                <p class="mb-4">Harness the power of the sun throughout the year! Here's some information about solar energy:</p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li>Solar panels can generate electricity in all seasons, though efficiency may vary.</li>
+                    <li>Winter can actually improve solar panel efficiency due to cooler temperatures.</li>
+                    <li>Spring and fall are great times for solar panel maintenance and cleaning.</li>
+                    <li>Summer often provides the most sunlight hours for maximum energy production.</li>
+                </ul>
+                <p class="mt-4">Interested in going solar? Contact a local solar installer for a consultation!</p>
+            </div>
+        </main>
+    </div>
+
+    <footer class="theme-footer p-4 text-center">
+        <p>&copy; 2023 Seasonal Todo List. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function addTodo() {
+            const input = document.getElementById('new-todo');
+            const todoList = document.getElementById('todo-list');
+            if (input.value.trim() !== '') {
+                const li = document.createElement('li');
+                li.className = 'flex items-center justify-between';
+                li.innerHTML = `
+                    <div class="flex items-center">
+                        <input type="checkbox" class="mr-2">
+                        <span>${input.value}</span>
+                    </div>
+                    <button onclick="deleteTodo(this)" class="hover:underline">Delete</button>
+                `;
+                todoList.appendChild(li);
+                input.value = '';
+            }
+        }
+
+        function deleteTodo(button) {
+            const li = button.closest('li');
+            li.remove();
+        }
+
+        function showContent(page) {
+            const contents = ['home', 'about', 'contact', 'solar'];
+            contents.forEach(content => {
+                const element = document.getElementById(`${content}-content`);
+                if (content === page) {
+                    element.classList.remove('hidden');
+                } else {
+                    element.classList.add('hidden');
+                }
+            });
+            
+            // Close sidebar on mobile after clicking a link
+            if (window.innerWidth < 1024) {
+                document.getElementById('sidebar').classList.add('hidden');
+            }
+        }
+
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('hidden');
+        });
+
+        // Theme switcher
+        function switchTheme(theme) {
+            document.body.className = `theme-${theme} flex flex-col min-h-screen`;
+            localStorage.setItem('theme', theme);
+            document.getElementById('theme-selector').value = theme;
+        }
+
+        document.getElementById('theme-selector').addEventListener('change', function() {
+            switchTheme(this.value);
+        });
+
+        // Load saved theme or default to autumn
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'autumn';
+            switchTheme(savedTheme);
+        }
+
+        // Initialize theme on page load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadTheme);
+        } else {
+            loadTheme();
+        }
+    </script>
+</body>
+</html>

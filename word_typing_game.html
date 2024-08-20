@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Typing Adventure</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .floating { animation: float 3s ease-in-out infinite; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-purple-500 to-pink-500 h-screen flex items-center justify-center">
+    <div class="container mx-auto px-4">
+        <div class="bg-white rounded-lg shadow-2xl p-6 max-w-4xl mx-auto">
+            <h1 class="text-4xl font-bold text-center text-purple-600 mb-4">Word Typing Adventure</h1>
+            <div class="relative">
+                <canvas id="gameCanvas" class="border-4 border-purple-300 rounded-lg shadow-lg"></canvas>
+                <div id="score" class="absolute top-2 right-2 bg-purple-600 text-white px-3 py-1 rounded-full font-bold">Score: 0</div>
+                <div id="wordPrompt" class="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-yellow-300 px-4 py-2 rounded-full font-bold text-purple-700 hidden"></div>
+            </div>
+            <div class="mt-4 text-center">
+                <input type="text" id="wordInput" class="border-2 border-purple-300 rounded px-4 py-2 focus:outline-none focus:border-purple-500" placeholder="Type the word here..." disabled>
+            </div>
+            <div class="mt-4 text-center">
+                <button id="startButton" class="bg-purple-600 text-white px-6 py-2 rounded-full font-bold hover:bg-purple-700 transition duration-300">Start Game</button>
+            </div>
+            <div class="mt-4 text-center text-gray-600">
+                Use WASD keys to move around and type the words you encounter!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+        const wordPrompt = document.getElementById('wordPrompt');
+        const wordInput = document.getElementById('wordInput');
+        const startButton = document.getElementById('startButton');
+
+        canvas.width = 800;
+        canvas.height = 400;
+
+        const player = {
+            x: 50,
+            y: canvas.height / 2,
+            width: 30,
+            height: 30,
+            speed: 5
+        };
+
+        let gameLoop;
+        let score = 0;
+        let words = [];
+        let currentWord = null;
+        let gameActive = false;
+
+        const keys = {
+            w: false,
+            a: false,
+            s: false,
+            d: false
+        };
+
+        function generateWord() {
+            const wordList = [
+                "adventure", "bravery", "creative", "discover", "enchant",
+                "fantastic", "glorious", "harmony", "imagine", "journey",
+                "kindness", "laughter", "marvelous", "nostalgia", "optimism",
+                "passion", "quixotic", "radiant", "serendipity", "tranquil",
+                "uplifting", "vivacious", "wanderlust", "xylophone", "zephyr",
+                "eloquent", "whimsical", "effervescent", "mellifluous", "ephemeral",
+                "luminous", "surreptitious", "melancholy", "ethereal", "labyrinthine",
+                "enigmatic", "clandestine", "euphoria", "paradox", "synchronicity"
+            ];
+            return wordList[Math.floor(Math.random() * wordList.length)];
+        }
+
+        function spawnWord() {
+            const word = generateWord();
+            words.push({
+                text: word,
+                x: canvas.width,
+                y: Math.random() * (canvas.height - 30),
+                spawnTime: Date.now()
+            });
+        }
+
+        function drawPlayer() {
+            ctx.fillStyle = '#8B5CF6';
+            ctx.beginPath();
+            ctx.moveTo(player.x, player.y);
+            ctx.lineTo(player.x + player.width, player.y + player.height / 2);
+            ctx.lineTo(player.x, player.y + player.height);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        function drawWords() {
+            ctx.font = '20px Arial';
+            ctx.fillStyle = '#4B5563';
+            words.forEach(word => {
+                ctx.fillText(word.text, word.x, word.y);
+            });
+        }
+
+        function movePlayer() {
+            if (keys.w && player.y > 0) player.y -= player.speed;
+            if (keys.s && player.y < canvas.height - player.height) player.y += player.speed;
+            if (keys.a && player.x > 0) player.x -= player.speed;
+            if (keys.d && player.x < canvas.width - player.width) player.x += player.speed;
+        }
+
+        function checkCollision() {
+            words.forEach((word, index) => {
+                if (
+                    player.x < word.x + ctx.measureText(word.text).width &&
+                    player.x + player.width > word.x &&
+                    player.y < word.y &&
+                    player.y + player.height > word.y - 20
+                ) {
+                    currentWord = word;
+                    words.splice(index, 1);
+                    wordPrompt.textContent = word.text;
+                    wordPrompt.classList.remove('hidden');
+                    wordInput.disabled = false;
+                    wordInput.focus();
+                }
+            });
+        }
+
+        function update() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            movePlayer();
+            drawPlayer();
+            drawWords();
+            checkCollision();
+
+            words.forEach(word => {
+                word.x -= 2;
+            });
+
+            if (Math.random() < 0.02) {
+                spawnWord();
+            }
+
+            words = words.filter(word => word.x + ctx.measureText(word.text).width > 0);
+        }
+
+        function startGame() {
+            gameActive = true;
+            score = 0;
+            scoreElement.textContent = `Score: ${score}`;
+            words = [];
+            currentWord = null;
+            wordPrompt.classList.add('hidden');
+            wordInput.value = '';
+            wordInput.disabled = true;
+            startButton.disabled = true;
+            gameLoop = setInterval(update, 1000 / 60);
+        }
+
+        startButton.addEventListener('click', startGame);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key.toLowerCase() in keys) {
+                e.preventDefault();
+                keys[e.key.toLowerCase()] = true;
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (e.key.toLowerCase() in keys) {
+                e.preventDefault();
+                keys[e.key.toLowerCase()] = false;
+            }
+        });
+
+        wordInput.addEventListener('input', () => {
+            if (currentWord && wordInput.value.toLowerCase() === currentWord.text.toLowerCase()) {
+                const timeTaken = (Date.now() - currentWord.spawnTime) / 1000;
+                const pointsEarned = Math.max(10, Math.floor(100 / timeTaken));
+                score += pointsEarned;
+                scoreElement.textContent = `Score: ${score}`;
+                currentWord = null;
+                wordPrompt.classList.add('hidden');
+                wordInput.value = '';
+                wordInput.disabled = true;
+            }
+        });
+
+        // Initial draw
+        drawPlayer();
+    </script>
+</body>
+</html>
