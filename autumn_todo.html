@@ -16,6 +16,8 @@
         .theme-autumn .theme-button { background-color: #FFA726; color: white; }
         .theme-autumn .theme-button:hover { background-color: #FB8C00; }
         .theme-autumn .theme-select { background-color: #FFB74D; color: white; border: 1px solid #FB8C00; }
+        .theme-autumn .custom-checkbox { border-color: #FB8C00; }
+        .theme-autumn .custom-checkbox.checked { background-color: #FB8C00; }
 
         .theme-winter { background-color: #E3F2FD; }
         .theme-winter .theme-header { background-color: #2196F3; color: white; }
@@ -26,6 +28,8 @@
         .theme-winter .theme-button { background-color: #42A5F5; color: white; }
         .theme-winter .theme-button:hover { background-color: #2196F3; }
         .theme-winter .theme-select { background-color: #64B5F6; color: white; border: 1px solid #2196F3; }
+        .theme-winter .custom-checkbox { border-color: #2196F3; }
+        .theme-winter .custom-checkbox.checked { background-color: #2196F3; }
 
         .theme-spring { background-color: #E8F5E9; }
         .theme-spring .theme-header { background-color: #4CAF50; color: white; }
@@ -36,6 +40,8 @@
         .theme-spring .theme-button { background-color: #66BB6A; color: white; }
         .theme-spring .theme-button:hover { background-color: #4CAF50; }
         .theme-spring .theme-select { background-color: #81C784; color: white; border: 1px solid #4CAF50; }
+        .theme-spring .custom-checkbox { border-color: #4CAF50; }
+        .theme-spring .custom-checkbox.checked { background-color: #4CAF50; }
 
         .theme-summer { background-color: #FFFDE7; }
         .theme-summer .theme-header { background-color: #FFEB3B; color: black; }
@@ -46,6 +52,8 @@
         .theme-summer .theme-button { background-color: #FFEE58; color: black; }
         .theme-summer .theme-button:hover { background-color: #FFEB3B; }
         .theme-summer .theme-select { background-color: #FFF176; color: black; border: 1px solid #FFEB3B; }
+        .theme-summer .custom-checkbox { border-color: #FBC02D; }
+        .theme-summer .custom-checkbox.checked { background-color: #FBC02D; }
 
         /* Common styles for select box */
         .theme-select {
@@ -56,20 +64,52 @@
             background-position: right 0.7rem top 50%;
             background-size: 1em auto;
         }
+
+        /* Custom checkbox styles */
+        .custom-checkbox {
+            display: inline-block;
+            width: 2rem;
+            height: 2rem;
+            border: 2px solid;
+            border-radius: 4px;
+            margin-right: 1rem;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .custom-checkbox.checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        /* Larger text for todo items */
+        #todo-list span {
+            font-size: 1.2rem;
+        }
+
+        /* Larger text for new todo input */
+        #new-todo {
+            font-size: 1.2rem;
+        }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
     <header class="theme-header p-4 flex justify-between items-center">
-        <h1 class="text-2xl font-bold">Seasonal Todo List</h1>
+        <h1 class="text-3xl font-bold">Seasonal Todo List</h1>
         <div class="flex items-center">
-            <select id="theme-selector" class="theme-select mr-4 rounded">
+            <select id="theme-selector" class="theme-select mr-4 rounded text-lg">
                 <option value="autumn">Autumn</option>
                 <option value="winter">Winter</option>
                 <option value="spring">Spring</option>
                 <option value="summer">Summer</option>
             </select>
             <button id="menu-toggle" class="lg:hidden">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                 </svg>
             </button>
@@ -78,9 +118,9 @@
 
     <div class="flex flex-1">
         <aside id="sidebar" class="theme-sidebar w-64 p-4 hidden lg:block">
-            <h2 class="text-xl font-semibold mb-4">Menu</h2>
+            <h2 class="text-2xl font-semibold mb-4">Menu</h2>
             <nav>
-                <ul>
+                <ul class="text-lg space-y-2">
                     <li><a href="#" onclick="showContent('home')" class="hover:underline">Home</a></li>
                     <li><a href="#" onclick="showContent('about')" class="hover:underline">About</a></li>
                     <li><a href="#" onclick="showContent('contact')" class="hover:underline">Contact</a></li>
@@ -91,90 +131,131 @@
 
         <main id="main-content" class="theme-main flex-1 p-4">
             <div id="home-content">
-                <h2 class="text-2xl font-bold mb-4">Todo List</h2>
-                <div class="bg-white rounded-lg shadow-md p-4">
-                    <ul id="todo-list" class="space-y-2">
-                        <li class="flex items-center justify-between">
-                            <div class="flex items-center">
-                                <input type="checkbox" class="mr-2">
-                                <span>Rake leaves</span>
-                            </div>
-                            <button onclick="deleteTodo(this)" class="hover:underline">Delete</button>
-                        </li>
-                        <li class="flex items-center justify-between">
-                            <div class="flex items-center">
-                                <input type="checkbox" class="mr-2">
-                                <span>Prepare pumpkin pie</span>
-                            </div>
-                            <button onclick="deleteTodo(this)" class="hover:underline">Delete</button>
-                        </li>
-                        <li class="flex items-center justify-between">
-                            <div class="flex items-center">
-                                <input type="checkbox" class="mr-2">
-                                <span>Decorate for Halloween</span>
-                            </div>
-                            <button onclick="deleteTodo(this)" class="hover:underline">Delete</button>
-                        </li>
+                <h2 class="text-3xl font-bold mb-6">Todo List</h2>
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <ul id="todo-list" class="space-y-4">
+                        <!-- Todo items will be dynamically added here -->
                     </ul>
-                    <div class="mt-4">
-                        <input type="text" id="new-todo" placeholder="Add a new todo" class="border rounded px-2 py-1 mr-2">
-                        <button onclick="addTodo()" class="theme-button px-4 py-1 rounded">Add</button>
+                    <div class="mt-6">
+                        <input type="text" id="new-todo" placeholder="Add a new todo" class="border rounded px-3 py-2 mr-2 w-2/3" onkeydown="handleNewTodoKeydown(event)">
+                        <button onclick="addTodo()" class="theme-button px-6 py-2 rounded text-lg">Add</button>
                     </div>
                 </div>
             </div>
             <div id="about-content" class="hidden">
-                <h2 class="text-2xl font-bold mb-4">About</h2>
-                <p>Welcome to our Seasonal Todo List application! This simple and intuitive app helps you keep track of your tasks and activities throughout the year. Whether it's raking leaves in autumn, building snowmen in winter, planting flowers in spring, or enjoying beach days in summer, our app has got you covered.</p>
+                <h2 class="text-3xl font-bold mb-6">About</h2>
+                <p class="text-xl">Welcome to our Seasonal Todo List application! This simple and intuitive app helps you keep track of your tasks and activities throughout the year. Whether it's raking leaves in autumn, building snowmen in winter, planting flowers in spring, or enjoying beach days in summer, our app has got you covered.</p>
             </div>
             <div id="contact-content" class="hidden">
-                <h2 class="text-2xl font-bold mb-4">Contact</h2>
-                <p>Have questions or suggestions? Feel free to reach out to us!</p>
-                <ul class="mt-4 space-y-2">
+                <h2 class="text-3xl font-bold mb-6">Contact</h2>
+                <p class="text-xl mb-4">Have questions or suggestions? Feel free to reach out to us!</p>
+                <ul class="mt-4 space-y-2 text-xl">
                     <li>Email: seasons@todolist.com</li>
                     <li>Phone: (555) 123-4567</li>
                     <li>Address: 123 Seasonal Street, Weather Town, WT 12345</li>
                 </ul>
             </div>
             <div id="solar-content" class="hidden">
-                <h2 class="text-2xl font-bold mb-4">Solar Energy</h2>
-                <p class="mb-4">Harness the power of the sun throughout the year! Here's some information about solar energy:</p>
-                <ul class="list-disc list-inside space-y-2">
+                <h2 class="text-3xl font-bold mb-6">Solar Energy</h2>
+                <p class="text-xl mb-4">Harness the power of the sun throughout the year! Here's some information about solar energy:</p>
+                <ul class="list-disc list-inside space-y-2 text-xl">
                     <li>Solar panels can generate electricity in all seasons, though efficiency may vary.</li>
                     <li>Winter can actually improve solar panel efficiency due to cooler temperatures.</li>
                     <li>Spring and fall are great times for solar panel maintenance and cleaning.</li>
                     <li>Summer often provides the most sunlight hours for maximum energy production.</li>
                 </ul>
-                <p class="mt-4">Interested in going solar? Contact a local solar installer for a consultation!</p>
+                <p class="mt-4 text-xl">Interested in going solar? Contact a local solar installer for a consultation!</p>
             </div>
         </main>
     </div>
 
     <footer class="theme-footer p-4 text-center">
-        <p>&copy; 2023 Seasonal Todo List. All rights reserved.</p>
+        <p class="text-lg">&copy; 2023 Seasonal Todo List. All rights reserved.</p>
     </footer>
 
     <script>
+        // Load todos from local storage
+        function loadTodos() {
+            const todos = JSON.parse(localStorage.getItem('todos')) || [];
+            const todoList = document.getElementById('todo-list');
+            todoList.innerHTML = '';
+            todos.forEach(todo => {
+                const li = createTodoElement(todo.text, todo.completed);
+                todoList.appendChild(li);
+            });
+        }
+
+        // Save todos to local storage
+        function saveTodos() {
+            const todoList = document.getElementById('todo-list');
+            const todos = Array.from(todoList.children).map(li => ({
+                text: li.querySelector('span').textContent,
+                completed: li.querySelector('.custom-checkbox').classList.contains('checked')
+            }));
+            localStorage.setItem('todos', JSON.stringify(todos));
+        }
+
+        function createTodoElement(text, completed = false) {
+            const li = document.createElement('li');
+            li.className = 'flex items-center justify-between';
+            li.innerHTML = `
+                <div class="flex items-center">
+                    <div class="custom-checkbox ${completed ? 'checked' : ''}" onclick="toggleTodo(this)"></div>
+                    <span ondblclick="editTodo(this)">${text}</span>
+                </div>
+                <button onclick="deleteTodo(this)" class="hover:underline text-lg">Delete</button>
+            `;
+            return li;
+        }
+
+        function toggleTodo(checkbox) {
+            checkbox.classList.toggle('checked');
+            saveTodos();
+        }
+
         function addTodo() {
             const input = document.getElementById('new-todo');
-            const todoList = document.getElementById('todo-list');
             if (input.value.trim() !== '') {
-                const li = document.createElement('li');
-                li.className = 'flex items-center justify-between';
-                li.innerHTML = `
-                    <div class="flex items-center">
-                        <input type="checkbox" class="mr-2">
-                        <span>${input.value}</span>
-                    </div>
-                    <button onclick="deleteTodo(this)" class="hover:underline">Delete</button>
-                `;
+                const todoList = document.getElementById('todo-list');
+                const li = createTodoElement(input.value);
                 todoList.appendChild(li);
                 input.value = '';
+                saveTodos();
             }
         }
 
         function deleteTodo(button) {
             const li = button.closest('li');
             li.remove();
+            saveTodos();
+        }
+
+        function editTodo(span) {
+            const text = span.textContent;
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = text;
+            input.className = 'border rounded px-3 py-2 text-lg w-full';
+            input.onblur = function() {
+                span.textContent = this.value;
+                span.style.display = '';
+                this.remove();
+                saveTodos();
+            };
+            input.onkeydown = function(e) {
+                if (e.key === 'Enter') {
+                    this.blur();
+                }
+            };
+            span.style.display = 'none';
+            span.parentNode.insertBefore(input, span);
+            input.focus();
+        }
+
+        function handleNewTodoKeydown(event) {
+            if (event.key === 'Enter') {
+                addTodo();
+            }
         }
 
         function showContent(page) {
@@ -216,11 +297,15 @@
             switchTheme(savedTheme);
         }
 
-        // Initialize theme on page load
+        // Initialize theme and todos on page load
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', loadTheme);
+            document.addEventListener('DOMContentLoaded', function() {
+                loadTheme();
+                loadTodos();
+            });
         } else {
             loadTheme();
+            loadTodos();
         }
     </script>
 </body>
